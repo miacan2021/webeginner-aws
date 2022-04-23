@@ -2,23 +2,38 @@ import React from "react";
 import { GetStaticProps, GetStaticPaths, GetStaticPathsResult } from "next";
 import { API, withSSRContext } from "aws-amplify";
 import { listPosts, getPost } from "../../graphql/queries";
-import { ListPostsQuery, ListPostsQueryVariables } from "../../API";
+import { ListPostsQuery, GetPostQuery, Post, Comment } from "../../API";
 import { ParsedUrlQuery } from "querystring";
+import { PostComment } from "../../components/PostComment";
 
-type Props = {};
+type Props = {
+  post: Post;
+};
 
-const individualPost = (props: Props) => {
-  return <div>[id]</div>;
+const individualPost = ({ post }: Props) => {
+  console.log("post", post);
+
+  return (
+    <div>
+      {post.id}
+      {(post.comments?.items as Comment[]).map((comment) => (
+        <PostComment key={comment.id} comment={comment} />
+      ))}
+    </div>
+  );
 };
 
 export default individualPost;
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch("https://.../posts");
-  const posts = await res.json();
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const SSR = withSSRContext();
+  const postQuery = (await SSR.API.graphql({
+    query: getPost,
+    variables: { id: params!.id },
+  })) as { data: GetPostQuery };
   return {
     props: {
-      posts,
+      post: postQuery.data.getPost as Post,
     },
   };
 };

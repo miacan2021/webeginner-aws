@@ -6,6 +6,7 @@ import { listPosts } from "../graphql/queries";
 import { ListPostsQuery, Post } from "../API";
 import { Container } from "@mui/material";
 import PostPreview from "../components/PostPreview";
+import Header from "../components/Header";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -30,6 +31,7 @@ const Home: NextPage = () => {
 
   return (
     <Container maxWidth="md">
+      <Header />
       {posts.map((post) => (
         <PostPreview key={post.id} post={post} />
       ))}
