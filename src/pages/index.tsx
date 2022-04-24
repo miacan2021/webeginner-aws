@@ -27,7 +27,6 @@ const Home: NextPage = () => {
     };
     fetchPostsFromApi();
   }, []);
-  console.log("posts", posts);
 
   return (
     <Container maxWidth="md">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Storage, API } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
@@ -6,11 +6,13 @@ import { createPost } from "../graphql/mutations";
 import { CreatePostInput, CreatePostMutation } from "../API";
 import { useRouter } from "next/router";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
-
+import { CognitoUser } from "@aws-amplify/auth";
 import ImageDropZone from "../components/ImageDropZone";
+import { useUser } from "../context/AuthContext";
 
 interface IFormInput {
   title: string;
+  username: string | undefined | null;
   content: string;
   url: string;
   tags: Array<string> | string;
@@ -19,7 +21,7 @@ interface IFormInput {
 const Create = () => {
   const [file, setFile] = useState<File>();
   const router = useRouter();
-
+  const { user } = useUser();
   const {
     register,
     handleSubmit,
@@ -36,6 +38,7 @@ const Create = () => {
         contents: data.content,
         url: data.url,
         tags: tagArray,
+        username: user?.attributes?.sub,
       };
       try {
         const imagePath = uuidv4();
@@ -49,6 +52,7 @@ const Create = () => {
           image: imagePath,
           url: data.url,
           tags: tagArray,
+          username: user?.attributes?.sub,
         };
 
         const createNewPost = (await API.graphql({
@@ -69,6 +73,7 @@ const Create = () => {
         contents: data.content,
         url: data.url,
         tags: tagArray,
+        username: user?.attributes?.sub,
       };
       const createNewPostWithoutImage = (await API.graphql({
         query: createPost,

@@ -9,6 +9,8 @@ export const getPost = /* GraphQL */ `
       title
       contents
       image
+      tags
+      url
       comments {
         items {
           id
@@ -38,6 +40,8 @@ export const listPosts = /* GraphQL */ `
         title
         contents
         image
+        tags
+        url
         comments {
           nextToken
         }
@@ -77,6 +81,25 @@ export const listComments = /* GraphQL */ `
         owner
       }
       nextToken
+    }
+  }
+`;
+
+export const postsByUsername = /* GraphQL */ `
+  query MyQuery($username: String) {
+    listPosts(filter: { username: { eq: $username } }) {
+      items {
+        username
+        url
+        updatedAt
+        title
+        tags
+        owner
+        image
+        id
+        createdAt
+        contents
+      }
     }
   }
 `;

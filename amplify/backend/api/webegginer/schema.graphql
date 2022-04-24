@@ -7,7 +7,9 @@ type Post
       { allow: public, operations: [read] }
     ]
   ) {
-  id: ID!
+  id: ID! @index(name: "postsByUsername", sortKeyFields: ["username"])
+  username: String!
+
   title: String!
   contents: String!
   url: String!

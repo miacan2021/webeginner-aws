@@ -10,8 +10,16 @@ import {
 import { CognitoUser } from "@aws-amplify/auth";
 import { Auth, Hub } from "aws-amplify";
 
+export interface UserAttributes {
+  sub: string;
+  email: string;
+  email_verified: string;
+}
+interface CognitoUserExt extends CognitoUser {
+  attributes?: UserAttributes;
+}
 interface UserContextType {
-  user: CognitoUser | null;
+  user: CognitoUserExt | null;
   setUser: Dispatch<SetStateAction<CognitoUser | null>>;
 }
 

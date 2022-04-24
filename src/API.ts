@@ -6,11 +6,12 @@ import { StaticImageData } from "next/image";
 
 export type CreatePostInput = {
   id?: string | null;
+  username: string | null | undefined;
   title: string;
   contents: string;
   image?: string | null;
   url: string;
-  tags: Array<string>;
+  tags: string[];
 };
 
 export type ModelPostConditionInput = {
@@ -64,6 +65,7 @@ export type ModelSizeInput = {
 export type Post = {
   __typename: "Post";
   id: string;
+  username: string;
   title: string;
   contents: string;
   image?: string | null;
