@@ -33,7 +33,6 @@ const individualPost = ({ post }: Props) => {
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
     console.log(data);
-
     const newCommentInput: CreateCommentInput = {
       postID: post.id,
       content: data.content,
@@ -43,15 +42,13 @@ const individualPost = ({ post }: Props) => {
       variables: { input: newCommentInput },
       authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
     })) as { data: CreateCommentMutation };
-
     setComments([...comments, createNewComment.data.createComment as Comment]);
   };
   return (
     <>
       {post.id}
       {post.contents}
-
-      {(post.comments?.items as Comment[])
+      {(comments as Comment[])
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
         .map((comment) => (
           <PostComment key={comment.id} comment={comment} />
