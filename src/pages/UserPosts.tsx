@@ -28,14 +28,14 @@ const UserPosts = (props: Props) => {
     setPosts(postData.data.listPosts.items);
     console.log(postData.data.listPosts.items);
   }
-  // async function deletePost(id) {
-  //   await API.graphql({
-  //     query: deletePostMutation,
-  //     variables: { input: {id} }, //id
-  //     authMode: "AMAZON_COGNITO_USER_POOLS",
-  //   });
-  //   fetchPosts();
-  // }
+  async function deletePost(id: string) {
+    await API.graphql({
+      query: deletePostMutation,
+      variables: { input: { id } },
+      authMode: "AMAZON_COGNITO_USER_POOLS",
+    });
+    fetchPosts(loginUser);
+  }
   return (
     <>
       <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">
@@ -52,12 +52,12 @@ const UserPosts = (props: Props) => {
             <Link href={`/posts/${post}`}>
               <a className="text-sm mr-4 text-blue-500">View Post</a>
             </Link>
-            {/* <button
+            <button
               className="text-sm mr-4 text-red-500"
-              onClick={() => deletePost()}
+              onClick={() => deletePost(post.id)}
             >
               Delete Post
-            </button> */}
+            </button>
           </div>
         ))}
     </>
