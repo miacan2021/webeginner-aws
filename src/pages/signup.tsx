@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import Input, { Button, TextField } from "@mui/material";
 import { CognitoUser } from "@aws-amplify/auth";
 import { Auth } from "aws-amplify";
@@ -17,11 +17,11 @@ interface IFormInput {
 }
 
 const Signup = () => {
-  const { user, setUser } = useUser();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [signUpErr, setSignUpErr] = useState<string>("");
   const [showCode, setShowCode] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -61,8 +61,6 @@ const Signup = () => {
       throw error;
     }
   }
-
-  console.log("user from hook", user);
 
   async function confirmSignUp(data: IFormInput) {
     const { username, password, code } = data;

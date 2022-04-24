@@ -12,10 +12,10 @@ type Props = {
 
 const individualPost = ({ post }: Props) => {
   console.log("post", post);
-
   return (
     <div>
       {post.id}
+      {post.contents}
       {(post.comments?.items as Comment[]).map((comment) => (
         <PostComment key={comment.id} comment={comment} />
       ))}

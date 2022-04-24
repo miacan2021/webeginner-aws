@@ -27,6 +27,12 @@ export default function Header({}: Props) {
         </div>
         {user ? (
           <>
+            <button
+              className="btn btn-accent"
+              onClick={() => router.push("/create")}
+            >
+              Create
+            </button>
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">

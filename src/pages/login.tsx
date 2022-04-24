@@ -15,9 +15,7 @@ interface IFormInput {
 }
 
 const Login = () => {
-  const { user, setUser } = useUser();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [signInErr, setSignInErr] = useState<string>("");
   const {
     register,
@@ -26,11 +24,11 @@ const Login = () => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const amplifyUser = await Auth.signIn(data.username, data.password);
-    if (amplifyUser) {
+    try {
+      await Auth.signIn(data.username, data.password);
       router.push("/");
-    } else {
-      throw new Error("something wrong");
+    } catch (error) {
+      setSignInErr("something wrong!");
     }
   };
 
@@ -64,15 +62,14 @@ const Login = () => {
           required: { value: true, message: "Please enter a password." },
         })}
       />
-
       <Button variant="contained" type="submit">
-        Sign in
+        Login
       </Button>
 
       {/* <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {signUpErr}
-        </Alert> */}
+        <AlertTitle>Error</AlertTitle>
+        {signInErr}
+      </Alert> */}
     </form>
   );
 };

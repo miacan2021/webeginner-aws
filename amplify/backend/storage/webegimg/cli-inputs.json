@@ -1,0 +1,16 @@
+{
+  "resourceName": "webegimg",
+  "policyUUID": "57d24595",
+  "bucketName": "webegginere2298be3ece246e4a060d5e0e10de1e5",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
