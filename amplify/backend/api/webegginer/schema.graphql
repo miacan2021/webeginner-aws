@@ -9,7 +9,6 @@ type Post
   ) {
   id: ID! @index(name: "postsByUsername", sortKeyFields: ["username"])
   username: String!
-
   title: String!
   contents: String!
   url: String!

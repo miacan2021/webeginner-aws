@@ -33,13 +33,13 @@ const Create = () => {
     console.log(file);
     let tagArray: Array<string> = (data.tags as string).split(" ");
     if (file) {
-      const createNewPostWithoutImageInput: CreatePostInput = {
-        title: data.title,
-        contents: data.content,
-        url: data.url,
-        tags: tagArray,
-        username: user?.attributes?.sub,
-      };
+      // const createNewPostWithoutImageInput: CreatePostInput = {
+      //   title: data.title,
+      //   contents: data.content,
+      //   url: data.url,
+      //   tags: tagArray,
+      //   username: user?.attributes?.sub,
+      // };
       try {
         const imagePath = uuidv4();
         await Storage.put(imagePath, file, {

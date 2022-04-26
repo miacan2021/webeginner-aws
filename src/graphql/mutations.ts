@@ -29,6 +29,7 @@ export const createPost = /* GraphQL */ `
     }
   }
 `;
+
 export const updatePost = /* GraphQL */ `
   mutation UpdatePost(
     $input: UpdatePostInput!
@@ -53,6 +54,8 @@ export const updatePost = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+      tags
+      url
     }
   }
 `;

@@ -12,6 +12,7 @@ const UserPosts = (props: Props) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const { user } = useUser();
   const [loginUser, setLoginUser] = useState<string | undefined>("");
+
   useEffect(() => {
     setLoginUser(user?.attributes?.sub);
     if (loginUser) {
@@ -26,7 +27,7 @@ const UserPosts = (props: Props) => {
       variables: userVariable,
     });
     setPosts(postData.data.listPosts.items);
-    console.log(postData.data.listPosts.items);
+    console.log(posts);
   }
   async function deletePost(id: string) {
     await API.graphql({
@@ -43,13 +44,25 @@ const UserPosts = (props: Props) => {
       </h1>
       {posts &&
         posts.map((post: Post, index) => (
-          <div key={index} className="border-b border-gray-300	mt-8 pb-4">
+          <div key={index} className="border-b border-gray-300	mt-8 pbyarn4">
             <h2 className="text-xl font-semibold">{post.title}</h2>
             <p className="text-gray-500 mt-2 mb-2">Author: {}</p>
-            <Link href={`/edit-post/${post}`}>
+            <Link
+              href={{
+                pathname: `/edit-post/${post.id}`,
+                query: {
+                  title: post.title,
+                  content: post.contents,
+                  image: post.image,
+                  url: post.url,
+                  tags: post.tags,
+                },
+              }}
+            >
               <a className="text-sm mr-4 text-blue-500">Edit Post</a>
             </Link>
-            <Link href={`/posts/${post}`}>
+
+            <Link href={`/post/${post.id}`}>
               <a className="text-sm mr-4 text-blue-500">View Post</a>
             </Link>
             <button

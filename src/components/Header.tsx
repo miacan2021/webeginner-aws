@@ -2,6 +2,7 @@ import { Auth } from "aws-amplify";
 import { useRouter } from "next/router";
 import React from "react";
 import { useUser } from "../context/AuthContext";
+import Link from "next/link";
 
 type Props = {};
 
@@ -50,7 +51,7 @@ export default function Header({}: Props) {
                   <a className="justify-between">Profile</a>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <Link href="/yourposts">Posts</Link>
                 </li>
                 <li onClick={logoutUser}>
                   <a>Logout</a>

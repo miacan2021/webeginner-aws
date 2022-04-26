@@ -73,6 +73,8 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   owner?: string | null;
+  url: string;
+  tags: string[];
 };
 
 export type ModelCommentConnection = {
@@ -92,10 +94,12 @@ export type Comment = {
 };
 
 export type UpdatePostInput = {
-  id: string;
+  id?: string;
   title?: string | null;
   contents?: string | null;
   image?: string | null;
+  url?: string | null;
+  tags?: string[] | string | null;
 };
 
 export type DeletePostInput = {
@@ -210,6 +214,8 @@ export type UpdatePostMutation = {
     title: string;
     contents: string;
     image?: string | null;
+    url: string | null;
+    tags: string[];
     comments?: {
       __typename: "ModelCommentConnection";
       items: Array<{

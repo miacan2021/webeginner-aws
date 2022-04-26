@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface Props {
-  file?: File;
-  setFile: React.Dispatch<React.SetStateAction<File | undefined>>;
+  file?: File | string | undefined;
+  setFile: React.Dispatch<React.SetStateAction<File | string | undefined>>;
 }
 
 const ImageDropZone = ({ file, setFile }: Props) => {
@@ -12,9 +12,9 @@ const ImageDropZone = ({ file, setFile }: Props) => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setFile(acceptedFiles[0]);
-      console.log("file", file);
     },
   });
+  console.log(file);
 
   return (
     <>
@@ -37,8 +37,20 @@ const ImageDropZone = ({ file, setFile }: Props) => {
           </div>
         </section>
       ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={URL.createObjectURL(file)} alt="postimage" />
+        <div
+          {...getRootProps({ className: "dropzone" })}
+          style={{ padding: 16 }}
+        >
+          <input {...getInputProps()} />
+          <img
+            src={
+              typeof file === "string"
+                ? file
+                : URL.createObjectURL(file as File)
+            }
+            alt="postimage"
+          />
+        </div>
       )}
     </>
   );
