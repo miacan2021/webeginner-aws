@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDropzone } from "react-dropzone";
 
 interface Props {
   file?: File | string | undefined;
   setFile: React.Dispatch<React.SetStateAction<File | string | undefined>>;
+  setFileType: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const ImageDropZone = ({ file, setFile }: Props) => {
+const ImageDropZone = ({ file, setFile, setFileType }: Props) => {
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setFile(acceptedFiles[0]);
+      setFileType(acceptedFiles[0].type);
     },
   });
   console.log(file);
+  const deleteImg = () => {
+    setFile("");
+  };
 
   return (
     <>
@@ -52,6 +57,9 @@ const ImageDropZone = ({ file, setFile }: Props) => {
           />
         </div>
       )}
+      <button className="text-sm mr-4 text-red-500" onClick={() => deleteImg()}>
+        Delete Image
+      </button>
     </>
   );
 };

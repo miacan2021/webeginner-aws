@@ -7,9 +7,10 @@ import { updatePost } from "../../graphql/mutations";
 import { UpdatePostInput, UpdatePostMutation } from "../../API";
 import { useRouter } from "next/router";
 import ImageDropZone from "../../components/ImageDropZone";
-import { useUser } from "../../context/AuthContext";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import { API } from "aws-amplify";
+import { deletePost as deletePostMutation } from "../../graphql/mutations";
+import { useUser } from "../../context/AuthContext";
 
 interface FormInput {
   id?: string;
@@ -24,7 +25,7 @@ const editPost = () => {
   const router = useRouter();
   const query = router.query;
   const [file, setFile] = useState<string | File | undefined>();
-  const [fileType, setFileType] = useState<string>("");
+  const [fileType, setFileType] = useState<string | undefined>();
   const [post, setPost] = useState<FormInput>({
     id: "",
     title: "",
@@ -45,7 +46,7 @@ const editPost = () => {
         content: query.content,
         url: query.url,
         image: query?.image || "",
-        tags: query.tags,
+        tags: query.tags?.toString().replaceAll(",", " "),
       } as FormInput);
     }
     if (post.image !== "") {
@@ -65,7 +66,7 @@ const editPost = () => {
 
   const onSubmit: SubmitHandler<FormInput> = async () => {
     let tagArray: Array<string> = (post.tags as string).split(" ");
-    if (file) {
+    if (typeof file === file || file !== "") {
       const updatePostWithoutImageInput: UpdatePostInput = {
         id: post.id,
         title: post.title,
@@ -75,9 +76,9 @@ const editPost = () => {
         image: post.image,
       };
       try {
-        const imagePath = post.image || "";
+        const imagePath = post.image === "" ? uuidv4() : post.image || uuidv4();
         await Storage.put(imagePath, file, {
-          contentType: typeof file === "string" ? fileType : file.type,
+          contentType: fileType,
         });
 
         const updatePostInput: UpdatePostInput = {
@@ -101,12 +102,14 @@ const editPost = () => {
         console.log("Error uploading file: ", error);
       }
     } else {
+      if (post.image) await Storage.remove(`${post.image}`);
       const updatePostWithoutImageInput: UpdatePostInput = {
         id: post.id,
         title: post.title,
         contents: post.content,
         url: post.url,
         tags: tagArray,
+        image: "",
       };
       const updatePosttWithoutImage = (await API.graphql({
         query: updatePost,
@@ -114,7 +117,6 @@ const editPost = () => {
         authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
       })) as { data: UpdatePostMutation };
       console.log("New post created successfully:", updatePost);
-
       router.push(`/post/${post.id}`);
     }
   };
@@ -124,6 +126,15 @@ const editPost = () => {
     }
   ) {
     setPost(() => ({ ...post, [e.target.id]: e.target.value }));
+  }
+  async function deletePost(id?: string, image?: string) {
+    await API.graphql({
+      query: deletePostMutation,
+      variables: { input: { id } },
+      authMode: "AMAZON_COGNITO_USER_POOLS",
+    });
+    await Storage.remove(`${image}`);
+    router.push(`/yourposts`);
   }
   return (
     <div>
@@ -137,7 +148,7 @@ const editPost = () => {
             onChange: (e) => {
               onChangeElem(e);
             },
-
+            minLength: 1,
             maxLength: 100,
           })}
         />
@@ -149,6 +160,7 @@ const editPost = () => {
             onChange: (e) => {
               onChangeElem(e);
             },
+            minLength: 1,
             maxLength: 1000,
           })}
         />
@@ -161,6 +173,7 @@ const editPost = () => {
             onChange: (e) => {
               onChangeElem(e);
             },
+            minLength: 1,
           })}
         />{" "}
         <input
@@ -172,13 +185,24 @@ const editPost = () => {
             onChange: (e) => {
               onChangeElem(e);
             },
+            minLength: 1,
           })}
         />
-        <ImageDropZone file={file} setFile={setFile} />
+        <ImageDropZone
+          file={file}
+          setFile={setFile}
+          setFileType={setFileType}
+        />
         <button className="btn btn-accent" type="submit">
           Submit
         </button>
       </form>
+      <button
+        className="text-sm mr-4 text-red-500"
+        onClick={() => deletePost(post.id, post.image)}
+      >
+        Delete Post
+      </button>
     </div>
   );
 };

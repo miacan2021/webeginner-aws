@@ -27,16 +27,8 @@ const UserPosts = (props: Props) => {
       variables: userVariable,
     });
     setPosts(postData.data.listPosts.items);
-    console.log(posts);
   }
-  async function deletePost(id: string) {
-    await API.graphql({
-      query: deletePostMutation,
-      variables: { input: { id } },
-      authMode: "AMAZON_COGNITO_USER_POOLS",
-    });
-    fetchPosts(loginUser);
-  }
+
   return (
     <>
       <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">
@@ -65,12 +57,6 @@ const UserPosts = (props: Props) => {
             <Link href={`/post/${post.id}`}>
               <a className="text-sm mr-4 text-blue-500">View Post</a>
             </Link>
-            <button
-              className="text-sm mr-4 text-red-500"
-              onClick={() => deletePost(post.id)}
-            >
-              Delete Post
-            </button>
           </div>
         ))}
     </>

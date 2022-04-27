@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Storage, API } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
@@ -6,7 +6,6 @@ import { createPost } from "../graphql/mutations";
 import { CreatePostInput, CreatePostMutation } from "../API";
 import { useRouter } from "next/router";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
-import { CognitoUser } from "@aws-amplify/auth";
 import ImageDropZone from "../components/ImageDropZone";
 import { useUser } from "../context/AuthContext";
 
@@ -19,7 +18,8 @@ interface IFormInput {
 }
 
 const Create = () => {
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<string | undefined | File>();
+  const [fileType, setFileType] = useState<string | undefined>();
   const router = useRouter();
   const { user } = useUser();
   const {
@@ -33,17 +33,10 @@ const Create = () => {
     console.log(file);
     let tagArray: Array<string> = (data.tags as string).split(" ");
     if (file) {
-      // const createNewPostWithoutImageInput: CreatePostInput = {
-      //   title: data.title,
-      //   contents: data.content,
-      //   url: data.url,
-      //   tags: tagArray,
-      //   username: user?.attributes?.sub,
-      // };
       try {
         const imagePath = uuidv4();
         await Storage.put(imagePath, file, {
-          contentType: file.type,
+          contentType: fileType,
         });
 
         const createNewPostInput: CreatePostInput = {
@@ -125,7 +118,11 @@ const Create = () => {
             required: true,
           })}
         />
-        <ImageDropZone file={file} setFile={setFile} />
+        <ImageDropZone
+          file={file}
+          setFile={setFile}
+          setFileType={setFileType}
+        />
         <button className="btn btn-accent" type="submit">
           Submit
         </button>
