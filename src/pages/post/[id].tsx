@@ -32,7 +32,6 @@ const individualPost = ({ post }: Props) => {
   );
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    console.log(data);
     const newCommentInput: CreateCommentInput = {
       postID: post.id,
       content: data.content,

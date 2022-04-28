@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import ImageDropZone from "../components/ImageDropZone";
 import { useUser } from "../context/AuthContext";
+import Header from "../components/Header";
+import { ErrorMessage } from "@hookform/error-message";
 
 interface IFormInput {
   title: string;
@@ -29,8 +31,6 @@ const Create = () => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
-    console.log(file);
     let tagArray: Array<string> = (data.tags as string).split(" ");
     if (file) {
       try {
@@ -79,55 +79,92 @@ const Create = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-        <input
-          type="text"
-          placeholder="Title"
-          className="input w-full max-w-xs"
-          id="title"
-          {...register("title", {
-            required: true,
-            maxLength: 100,
-          })}
-        />
-        <textarea
-          placeholder="Content"
-          className="textarea"
-          id="content"
-          {...register("content", {
-            required: true,
-            maxLength: 1000,
-          })}
-        />
-        <input
-          type="text"
-          placeholder="URL"
-          className="input w-full max-w-xs"
-          id="url"
-          {...register("url", {
-            required: true,
-          })}
-        />{" "}
-        <input
-          type="text"
-          placeholder="Tags"
-          className="input w-full max-w-xs"
-          id="tags"
-          {...register("tags", {
-            required: true,
-          })}
-        />
-        <ImageDropZone
-          file={file}
-          setFile={setFile}
-          setFileType={setFileType}
-        />
-        <button className="btn btn-accent" type="submit">
-          Submit
-        </button>
-      </form>
-    </div>
+    <>
+      <Header title={"Create | webeginner"} />
+      <div className="w-10/12 mx-auto">
+        <h1 className=" text-center text-4xl mt-10 tracking-widest font-mono">
+          Create Post
+        </h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+          className=" flex flex-col gap-2 justify-center items-center mt-10"
+        >
+          <input
+            type="text"
+            placeholder="Title"
+            className="input input-bordered  w-full max-w-xs"
+            id="title"
+            {...register("title", {
+              required: "Required",
+              maxLength: {
+                value: 100,
+                message: "This input exceed maxLength.",
+              },
+            })}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="title"
+            render={({ message }) => (
+              <div className="alert alert-error shadow-md bg-secondary mt-3 w-1/3 mx-auto">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current flex-shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Error! {message}</span>
+                </div>
+              </div>
+            )}
+          />
+          <textarea
+            placeholder="Content"
+            className="textarea  textarea-bordered w-full max-w-md h-60"
+            id="content"
+            {...register("content", {
+              required: true,
+              maxLength: 1000,
+            })}
+          />
+          <input
+            type="text"
+            placeholder="URL"
+            className="input  input-bordered w-full max-w-xs"
+            id="url"
+            {...register("url", {
+              required: true,
+            })}
+          />{" "}
+          <input
+            type="text"
+            placeholder="Tags"
+            className="input input-bordered  w-full max-w-xs"
+            id="tags"
+            {...register("tags", {
+              required: true,
+            })}
+          />
+          <ImageDropZone
+            file={file}
+            setFile={setFile}
+            setFileType={setFileType}
+          />
+          <button className="btn btn-accent" type="submit">
+            Submit
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

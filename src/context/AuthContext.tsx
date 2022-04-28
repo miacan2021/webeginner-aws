@@ -17,6 +17,7 @@ export interface UserAttributes {
 }
 interface CognitoUserExt extends CognitoUser {
   attributes?: UserAttributes;
+  username?: string;
 }
 interface UserContextType {
   user: CognitoUserExt | null;

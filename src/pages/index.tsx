@@ -11,7 +11,6 @@ import Header from "../components/Header";
 const Home: NextPage = () => {
   const { user } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
-  console.log("user:", user);
   useEffect(() => {
     const fetchPostsFromApi = async (): Promise<Post[]> => {
       const allPosts = (await API.graphql({ query: listPosts })) as {
@@ -29,12 +28,18 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <Container maxWidth="md">
-      <Header />
-      {posts.map((post) => (
-        <PostPreview key={post.id} post={post} />
-      ))}
-    </Container>
+    <>
+      <Header title={"webeginner"} />
+      <div className="w-full">
+        <div className="w-10/12 flex flex-col gap-3 justify-center items-center mx-auto">
+          {posts
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+            .map((post) => (
+              <PostPreview key={post.id} post={post} />
+            ))}
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -3,79 +3,96 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useUser } from "../context/AuthContext";
 import Link from "next/link";
-
-type Props = {};
-
-export default function Header({}: Props) {
+import Head from "next/head";
+type Props = {
+  title: string;
+};
+export default function Header({ title }: Props) {
   const { user } = useUser();
   const router = useRouter();
 
   const logoutUser = async () => {
     await Auth.signOut();
   };
+
   return (
-    <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
-      </div>
-      <div className="flex-none gap-2">
-        <div className="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered"
-          />
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="utf-8" />
+        <title>{title || "webeginner"}</title>
+      </Head>
+      <div className="w-full navbar bg-base-100 flex items-center justify-center">
+        <div className="flex-1">
+          <Link href="/">
+            <a className="btn btn-ghost normal-case text-xl font-mono">
+              webeginner
+            </a>
+          </Link>
         </div>
-        {user ? (
-          <>
-            <button
-              className="btn btn-accent"
-              onClick={() => router.push("/create")}
-            >
-              Create
-            </button>
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="usericon"
-                    src="https://api.lorem.space/image/face?hash=33791"
-                  />
-                </div>
-              </label>
-              <ul
-                tabIndex={0}
-                className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+        <div className="gap-2">
+          <div className="form-control">
+            <input
+              type="text"
+              placeholder="Search"
+              className="input input-bordered input-sm	md:input-md	"
+            />
+          </div>
+          {user ? (
+            <div className="flex gap-1">
+              <button
+                className="btn btn-accent"
+                onClick={() => router.push("/create")}
               >
-                <li>
-                  <a className="justify-between">Profile</a>
-                </li>
-                <li>
-                  <Link href="/yourposts">Posts</Link>
-                </li>
-                <li onClick={logoutUser}>
-                  <a>Logout</a>
-                </li>
-              </ul>
+                Create
+              </button>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="usericon"
+                      src="https://api.lorem.space/image/face?hash=33791"
+                    />
+                  </div>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+                >
+                  <li>
+                    <a className="justify-between font-semibold tracking-wider text-lg">
+                      {user.username}
+                    </a>
+                  </li>
+                  <li>
+                    <Link href="/yourposts">
+                      <a>Posts</a>
+                    </Link>
+                  </li>
+                  <li onClick={logoutUser}>
+                    <a>Logout</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </>
-        ) : (
-          <>
-            <button
-              className="btn btn-accent"
-              onClick={() => router.push("/signup")}
-            >
-              Sign Up
-            </button>
-            <button
-              className="btn btn-accent"
-              onClick={() => router.push("/login")}
-            >
-              Login
-            </button>
-          </>
-        )}
+          ) : (
+            <div className="flex gap-2">
+              <button
+                className="btn btn-accent btn-sm md:btn-md"
+                onClick={() => router.push("/signup")}
+              >
+                Sign Up
+              </button>
+              <button
+                className="btn btn-accent btn-sm md:btn-md"
+                onClick={() => router.push("/login")}
+              >
+                Login
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
