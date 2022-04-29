@@ -79,29 +79,64 @@ const Create = () => {
   };
 
   return (
-    <>
+    <div className="mb-10">
       <Header title={"Create | webeginner"} />
-      <div className="w-10/12 mx-auto">
-        <h1 className=" text-center text-4xl mt-10 tracking-widest font-mono">
+      <div className="mx-auto">
+        <h1 className="text-center text-4xl mt-10 tracking-widest font-mono">
           Create Post
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
-          className=" flex flex-col gap-2 justify-center items-center mt-10"
+          className="flex flex-col gap-2 justify-center items-center mt-10"
         >
           <input
             type="text"
             placeholder="Title"
-            className="input input-bordered  w-full max-w-xs"
+            className="input input-bordered w-5/6 lg:w-1/2 mb-3"
             id="title"
             {...register("title", {
-              required: "Required",
+              required: "Title is required.",
               maxLength: {
                 value: 100,
                 message: "This input exceed maxLength.",
               },
             })}
+          />
+          <textarea
+            placeholder="Content"
+            className="textarea  textarea-bordered h-60 w-5/6 lg:w-1/2 mb-3"
+            id="content"
+            {...register("content", {
+              required: "Content is required.",
+              maxLength: {
+                value: 1000,
+                message: "This input exceed maxLength.",
+              },
+            })}
+          />
+          <input
+            type="text"
+            placeholder="Tutorial URL"
+            className="input  input-bordered w-5/6 lg:w-1/2 mb-3"
+            id="url"
+            {...register("url", {
+              required: "Tutorial URL is required.",
+            })}
+          />{" "}
+          <input
+            type="text"
+            placeholder="Tags"
+            className="input input-bordered w-5/6 lg:w-1/2 mb-3  "
+            id="tags"
+            {...register("tags", {
+              required: "Tag is required",
+            })}
+          />
+          <ImageDropZone
+            file={file}
+            setFile={setFile}
+            setFileType={setFileType}
           />
           <ErrorMessage
             errors={errors}
@@ -127,44 +162,84 @@ const Create = () => {
               </div>
             )}
           />
-          <textarea
-            placeholder="Content"
-            className="textarea  textarea-bordered w-full max-w-md h-60"
-            id="content"
-            {...register("content", {
-              required: true,
-              maxLength: 1000,
-            })}
+          <ErrorMessage
+            errors={errors}
+            name="content"
+            render={({ message }) => (
+              <div className="alert alert-error shadow-md bg-secondary mt-3 w-1/3 mx-auto">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current flex-shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Error! {message}</span>
+                </div>
+              </div>
+            )}
           />
-          <input
-            type="text"
-            placeholder="URL"
-            className="input  input-bordered w-full max-w-xs"
-            id="url"
-            {...register("url", {
-              required: true,
-            })}
-          />{" "}
-          <input
-            type="text"
-            placeholder="Tags"
-            className="input input-bordered  w-full max-w-xs"
-            id="tags"
-            {...register("tags", {
-              required: true,
-            })}
+          <ErrorMessage
+            errors={errors}
+            name="url"
+            render={({ message }) => (
+              <div className="alert alert-error shadow-md bg-secondary mt-3 w-1/3 mx-auto">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current flex-shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Error! {message}</span>
+                </div>
+              </div>
+            )}
           />
-          <ImageDropZone
-            file={file}
-            setFile={setFile}
-            setFileType={setFileType}
+          <ErrorMessage
+            errors={errors}
+            name="tags"
+            render={({ message }) => (
+              <div className="alert alert-error shadow-md bg-secondary mt-3 w-1/3 mx-auto">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current flex-shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Error! {message}</span>
+                </div>
+              </div>
+            )}
           />
-          <button className="btn btn-accent" type="submit">
+          <button className="btn btn-accent tracking-widest w-28" type="submit">
             Submit
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

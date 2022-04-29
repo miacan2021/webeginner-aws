@@ -16,7 +16,6 @@ const ImageDropZone = ({ file, setFile, setFileType }: Props) => {
       setFileType(acceptedFiles[0].type);
     },
   });
-  console.log(file);
   const deleteImg = () => {
     setFile("");
   };
@@ -35,10 +34,25 @@ const ImageDropZone = ({ file, setFile, setFileType }: Props) => {
         >
           <div
             {...getRootProps({ className: "dropzone" })}
-            style={{ padding: 16 }}
+            className="border w-5/6 lg:w-1/2 mx-auto mt-2 border-dashed border-primary"
           >
             <input {...getInputProps()} />
-            <h1>Drag and drop the image you want to upload for your post.</h1>
+            <p className="py-10 px-3 text-center flex flex-col justify-center items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-10 w-10 stroke-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              Drag and drop the image you want to upload for your post.
+            </p>
           </div>
         </section>
       ) : (
@@ -54,10 +68,14 @@ const ImageDropZone = ({ file, setFile, setFileType }: Props) => {
                 : URL.createObjectURL(file as File)
             }
             alt="postimage"
+            className="w-36 h-36 object-cover"
           />
         </div>
       )}
-      <button className="text-sm mr-4 text-red-500" onClick={() => deleteImg()}>
+      <button
+        className="text-md mr-4 text-secondary  w-5/6 lg:w-1/2 flex justify-start items-start ml-10 md:ml-24 lg:ml-36"
+        onClick={() => deleteImg()}
+      >
         Delete Image
       </button>
     </>

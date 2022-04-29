@@ -4,6 +4,7 @@ import React from "react";
 import { useUser } from "../context/AuthContext";
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 type Props = {
   title: string;
 };
@@ -48,10 +49,12 @@ export default function Header({ title }: Props) {
               </button>
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                  <div className="w-10 rounded-full">
-                    <img
+                  <div className="w-10 rounded-full overflow-hidden">
+                    <Image
+                      layout="fill"
                       alt="usericon"
-                      src="https://api.lorem.space/image/face?hash=33791"
+                      className="w-10 rounded-full"
+                      src={"/icon.png"}
                     />
                   </div>
                 </label>
