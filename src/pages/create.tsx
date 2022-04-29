@@ -105,7 +105,7 @@ const Create = () => {
           />
           <textarea
             placeholder="Content"
-            className="textarea  textarea-bordered h-60 w-5/6 lg:w-1/2 mb-3"
+            className="textarea textarea-bordered h-60 w-5/6 lg:w-1/2 mb-3"
             id="content"
             {...register("content", {
               required: "Content is required.",

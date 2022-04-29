@@ -11,6 +11,7 @@ import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import { API } from "aws-amplify";
 import { deletePost as deletePostMutation } from "../../graphql/mutations";
 import { useUser } from "../../context/AuthContext";
+import Header from "../../components/Header";
 
 interface FormInput {
   id?: string;
@@ -24,7 +25,7 @@ interface FormInput {
 const editPost = () => {
   const router = useRouter();
   const query = router.query;
-  const [file, setFile] = useState<string | File | undefined>();
+  const [file, setFile] = useState<string | File | undefined>("");
   const [fileType, setFileType] = useState<string | undefined>();
   const [post, setPost] = useState<FormInput>({
     id: "",
@@ -49,15 +50,13 @@ const editPost = () => {
         tags: query.tags?.toString().replaceAll(",", " "),
       } as FormInput);
     }
-    if (post.image !== "") {
+    if (post.image !== "" || undefined) {
       const signedURL = Storage.get(post.image || "");
       signedURL.then((res) => setFile(res));
       download(post.image || "");
-      console.log(fileType);
     }
   }, [fileType, post.image, query]);
 
-  const { user } = useUser();
   const {
     register,
     handleSubmit,
@@ -66,17 +65,11 @@ const editPost = () => {
 
   const onSubmit: SubmitHandler<FormInput> = async () => {
     let tagArray: Array<string> = (post.tags as string).split(" ");
-    if (typeof file === file || file !== "") {
-      const updatePostWithoutImageInput: UpdatePostInput = {
-        id: post.id,
-        title: post.title,
-        contents: post.content,
-        url: post.url,
-        tags: tagArray,
-        image: post.image,
-      };
+    if (file !== "") {
+      console.log("ari");
       try {
-        const imagePath = post.image === "" ? uuidv4() : post.image || uuidv4();
+        const imagePath = !post.image ? uuidv4() : post.image;
+
         await Storage.put(imagePath, file, {
           contentType: fileType,
         });
@@ -95,28 +88,26 @@ const editPost = () => {
           authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
         })) as { data: UpdatePostMutation };
 
-        console.log("New post created successfully:", updatePost);
-
         router.push(`/post/${post.id}`);
       } catch (error) {
         console.log("Error uploading file: ", error);
       }
-    } else {
-      if (post.image) await Storage.remove(`${post.image}`);
+    } else if (file === "" || !post.image) {
+      console.log("nasi");
       const updatePostWithoutImageInput: UpdatePostInput = {
         id: post.id,
         title: post.title,
         contents: post.content,
         url: post.url,
         tags: tagArray,
-        image: "",
+        image: undefined,
       };
       const updatePosttWithoutImage = (await API.graphql({
         query: updatePost,
         variables: { input: updatePostWithoutImageInput },
         authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
       })) as { data: UpdatePostMutation };
-      console.log("New post created successfully:", updatePost);
+      await Storage.remove(`${post.image}`);
       router.push(`/post/${post.id}`);
     }
   };
@@ -125,7 +116,7 @@ const editPost = () => {
       target: HTMLButtonElement;
     }
   ) {
-    setPost(() => ({ ...post, [e.target.id]: e.target.value }));
+    setPost((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   }
   async function deletePost(id?: string, image?: string) {
     await API.graphql({
@@ -137,12 +128,20 @@ const editPost = () => {
     router.push(`/yourposts`);
   }
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+    <div className="mb-5 mx-auto w-10/12">
+      <Header title={"edit" + post.id} />
+      <h1 className="text-center text-2xl md:text-4xl mt-10 tracking-wider font-mono">
+        Edit / Delete
+      </h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="flex flex-col justify-center items-center mt-5"
+      >
         <input
           type="text"
           value={post.title}
-          className="input w-full max-w-xs"
+          className="input input-accent w-5/6 lg:w-1/2 mb-3"
           id="title"
           {...register("title", {
             onChange: (e) => {
@@ -154,7 +153,7 @@ const editPost = () => {
         />
         <textarea
           value={post.content}
-          className="textarea"
+          className="textarea textarea-accent h-60 w-5/6 lg:w-1/2 mb-3"
           id="content"
           {...register("content", {
             onChange: (e) => {
@@ -167,7 +166,7 @@ const editPost = () => {
         <input
           type="text"
           value={post.url}
-          className="input w-full max-w-xs"
+          className="input input-accent w-5/6 lg:w-1/2 mb-3"
           id="url"
           {...register("url", {
             onChange: (e) => {
@@ -179,7 +178,7 @@ const editPost = () => {
         <input
           type="text"
           value={post.tags}
-          className="input w-full max-w-xs"
+          className="input input-accent w-5/6 lg:w-1/2 mb-3"
           id="tags"
           {...register("tags", {
             onChange: (e) => {
@@ -193,12 +192,12 @@ const editPost = () => {
           setFile={setFile}
           setFileType={setFileType}
         />
-        <button className="btn btn-accent" type="submit">
-          Submit
+        <button className="btn btn-accent tracking-widest" type="submit">
+          Edit
         </button>
       </form>
       <button
-        className="text-sm mr-4 text-red-500"
+        className="btn btn-secondary tracking-widest"
         onClick={() => deletePost(post.id, post.image)}
       >
         Delete Post

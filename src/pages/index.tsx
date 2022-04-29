@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Header title={"webeginner"} />
-      <div className="w-full">
+      <div className="w-full mb-5">
         <div className="w-10/12 flex flex-col gap-3 justify-center items-center mx-auto">
           {posts
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
