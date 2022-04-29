@@ -13,8 +13,6 @@ type Props = {
 };
 
 export default function PostPreview({ post }: Props) {
-  console.log(post);
-
   const router = useRouter();
   const [postImage, setPostImage] = useState<string | undefined>();
 
@@ -33,7 +31,7 @@ export default function PostPreview({ post }: Props) {
   return (
     <div
       onClick={() => router.push(`/post/${post.id}`)}
-      className="w-full md:w-3/5 min-h-8 h-1/3 border flex flex-col items-center justify-center"
+      className="w-full md:w-3/5 min-h-8 h-1/3 border flex flex-col items-center justify-center cursor-pointer py-5"
     >
       <h2 className="font-mono text-2xl">{post.title}</h2>
       {post.image && postImage && (
