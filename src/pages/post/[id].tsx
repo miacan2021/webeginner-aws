@@ -75,7 +75,7 @@ const individualPost = ({ post }: Props) => {
       </h1>
       {post.image && postImage && (
         <Image
-          src={postImage}
+          src={`${postImage}`}
           height={300}
           width={350}
           layout="intrinsic"
