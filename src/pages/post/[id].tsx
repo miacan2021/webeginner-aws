@@ -83,6 +83,13 @@ const individualPost = ({ post }: Props) => {
           className="object-contain overflow-hidden"
         />
       )}
+      <div className="flex gap-2 mb-3">
+        {post.tags.map((tag) => (
+          <div className="badge badge-primary" key={tag + post.id}>
+            {tag}
+          </div>
+        ))}
+      </div>
       <p className="text-xl font-mono">{post.contents}</p>
       <p className="mt-4">Wanna check</p>
       <a className="link link-accent text-2xl" href={post.url}>
