@@ -46,16 +46,16 @@ const editPost = () => {
         title: query.title,
         content: query.content,
         url: query.url,
-        image: query?.image || "",
+        image: query?.image,
         tags: query.tags?.toString().replaceAll(",", " "),
       } as FormInput);
     }
     if (post.image !== "" || undefined) {
-      const signedURL = Storage.get(post.image || "");
+      const signedURL = Storage.get(post.image!);
       signedURL.then((res) => setFile(res));
-      download(post.image || "");
+      download(post.image!);
     }
-  }, [fileType, post.image, query]);
+  }, [post.image, query]);
 
   const {
     register,
@@ -65,21 +65,32 @@ const editPost = () => {
 
   const onSubmit: SubmitHandler<FormInput> = async () => {
     let tagArray: Array<string> = (post.tags as string).split(" ");
+
     if (file !== "") {
-      console.log("ari");
       try {
-        const imagePath = !post.image ? uuidv4() : post.image;
-
-        await Storage.put(imagePath, file, {
-          contentType: fileType,
-        });
-
+        if (file !== "" && typeof file === "string") {
+          console.log("already added");
+        } else if (
+          post.image &&
+          post.image !== "" &&
+          typeof post.image === "string"
+        ) {
+          await Storage.put(post.image, file, {
+            contentType: fileType,
+          });
+        } else {
+          const path = uuidv4();
+          await Storage.put(path, file, {
+            contentType: fileType,
+          });
+        }
         const updatePostInput: UpdatePostInput = {
           id: post.id,
           title: post.title,
           contents: post.content,
-          image: imagePath,
           url: post.url,
+          tags: tagArray,
+          image: post.image,
         };
 
         const updateCurrentPost = (await API.graphql({
@@ -87,20 +98,20 @@ const editPost = () => {
           variables: { input: updatePostInput },
           authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
         })) as { data: UpdatePostMutation };
+        console.log(updateCurrentPost);
 
         router.push(`/post/${post.id}`);
       } catch (error) {
         console.log("Error uploading file: ", error);
       }
     } else if (file === "" || !post.image) {
-      console.log("nasi");
       const updatePostWithoutImageInput: UpdatePostInput = {
         id: post.id,
         title: post.title,
         contents: post.content,
         url: post.url,
         tags: tagArray,
-        image: undefined,
+        image: null,
       };
       const updatePosttWithoutImage = (await API.graphql({
         query: updatePost,
